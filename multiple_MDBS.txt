@@ -1,0 +1,30 @@
+import os
+from access_parser import AccessParser
+import pandas as pd
+from datetime import date
+location = "D:\\Shaheryar\\KeyCodeandSummary\\29-4-2021\\MDBS\\COMBINE"
+
+# Print DB tables
+#print(db.catalog)
+df1 = pd.DataFrame()
+# Tables are stored as defaultdict(list) -- table[column][row_index]
+files = os.listdir(location)
+for a in files: 
+    file = location+"\\"+a
+    db = AccessParser(file)
+    table_name = "LCMS_Raveling_Processed_"+a[0:-4]
+    try:
+        table = db.parse_table(table_name)
+        df = pd.DataFrame(table)
+        df['SURVEY_ID'] = a[0:-4]
+     
+       
+        
+        df1 = df1.append(df,ignore_index=True)
+        
+    except:
+        print('Missing '+a[0:-5])
+    
+pd.set_option("display.max_rows", None, "display.max_columns", None)
+display(df1)
+df1.to_excel(location+"\\"+"master_IMAGE"+".xlsx")
